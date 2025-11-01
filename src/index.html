@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login - Sistema</title>
+  <style>
+    :root{
+      --yellow: #FFD54A;
+      --sand: #FFF8E1;
+      --accent: #F7C948;
+      --text: #222;
+      --card-bg: rgba(255,255,255,0.9);
+      --shadow: rgba(0,0,0,0.1);
+    }
+
+    html, body{
+      height:100%;
+      margin:0;
+      font-family: 'Inter', system-ui, Arial, sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, var(--sand) 70%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* contenedor principal */
+    .card {
+      position: relative;
+      width: 400px;
+      max-width: 90%;
+      padding: 32px;
+      border-radius: 16px;
+      background: var(--card-bg);
+      box-shadow: 0 12px 30px var(--shadow);
+      border: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* onda decorativa */
+    .wave {
+      position: absolute;
+      top: -40px;
+      left: -50px;
+      width: 500px;
+      height: 200px;
+      background: linear-gradient(180deg, rgba(255,213,74,0.15), transparent);
+      clip-path: ellipse(60% 60% at 50% 0%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* logo y título */
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom: 24px;
+      z-index: 1;
+    }
+    .logo {
+      width:60px;
+      height:60px;
+      border-radius:12px;
+      background: linear-gradient(135deg, var(--yellow), var(--accent));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:#3b2f0b;
+      box-shadow: 0 6px 18px rgba(247,201,72,0.25);
+      font-size:24px;
+    }
+    .brand h1 {
+      margin:0;
+      font-size:22px;
+      color: var(--text);
+    }
+    .brand p.sub {
+      margin:2px 0 0 0;
+      font-size:14px;
+      color:#666;
+    }
+
+    /* info y error */
+    #info, #error {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 12px;
+      font-size:13px;
+    }
+    #error { color: #b00020; }
+
+    /* formulario */
+    form {
+      width: 100%;
+      display:flex;
+      flex-direction: column;
+      gap:14px;
+    }
+    label {
+      font-size:13px;
+      color:#333;
+      margin-bottom:4px;
+    }
+    input[type="text"], input[type="password"] {
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(0,0,0,0.1);
+      font-size:14px;
+      outline:none;
+      background:#fff;
+      width:100%;
+      box-sizing:border-box;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    .pwd-row {
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .toggle-btn {
+      background:transparent;
+      border:1px solid rgba(0,0,0,0.1);
+      padding:8px 10px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:12px;
+      transition: background 0.2s;
+    }
+    .toggle-btn:hover { background: rgba(0,0,0,0.03); }
+
+    .submit {
+      padding:12px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      background: linear-gradient(90deg, var(--yellow), var(--accent));
+      color:#2b1b00;
+      font-weight:600;
+      font-size:15px;
+      box-shadow: 0 6px 16px rgba(247,201,72,0.2);
+      transition: transform 0.1s;
+    }
+    .submit:hover { transform: translateY(-2px); }
+
+    /* footer */
+    .footer-wave {
+      width: 100%;
+      height:40px;
+      margin-top:18px;
+      background: linear-gradient(180deg, rgba(247,201,72,0.1), transparent);
+      border-radius:8px;
+    }
+
+    /* responsive */
+    @media(max-width:480px){
+      .card { padding:20px; }
+      .brand h1 { font-size:20px; }
+      .logo { width:50px; height:50px; font-size:20px; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="wave" aria-hidden="true"></div>
+
+    <div class="brand">
+      <div class="logo">S</div>
+      <div>
+        <h1>Centro de Control</h1>
+        <p class="sub">Inicia sesión para acceder al dashboard</p>
+      </div>
+    </div>
+
+    <div id="info">Cargando configuración...</div>
+    <div id="error" style="display:none"></div>
+
+    <form id="loginForm" autocomplete="off">
+      <div>
+        <label for="username">Usuario</label>
+        <input id="username" name="username" type="text" required />
+      </div>
+
+      <div>
+        <label for="password">Contraseña</label>
+        <div class="pwd-row">
+          <input id="password" name="password" type="password" required />
+          <button type="button" id="togglePwd" class="toggle-btn" title="Ver / ocultar contraseña">Mostrar</button>
+        </div>
+      </div>
+
+      <div>
+        <button class="submit" type="submit">Entrar</button>
+      </div>
+    </form>
+
+    <div class="footer-wave" aria-hidden="true"></div>
+  </div>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>
