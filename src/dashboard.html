@@ -1,42 +1,58 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./ui/styles/topbar.css" />
-    <link rel="stylesheet" href="./ui/styles/dashboard.css" />
-    <title>Dashboard - Sistema IA</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./ui/styles/topbar.css" />
+  <link rel="stylesheet" href="./ui/styles/dashboard.css" />
+  <link rel="stylesheet" href="./ui/styles/camera_panel.css" />
+  <link rel="stylesheet" href="./ui/styles/notifications_panel.css" />
+  <link rel="stylesheet" href="./ui/styles/footer.css" />
+  <title>Dashboard - Sistema IA</title>
+</head>
 
-<div id="topbar-container"></div>
+<body>
+  <!-- Topbar -->
+  <div id="topbar-container"></div>
 
-<!-- Modal configuración -->
-<div id="config-modal" class="modal hidden">
-  <div class="modal-content">
-    <h2>Configuración de usuario</h2>
+  <!-- Modal configuración -->
+  <div id="config-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Configuración de usuario</h2>
 
-    <label>Nuevo nombre de usuario</label>
-    <input type="text" id="cfg-username" placeholder="Usuario">
+      <label>Nuevo nombre de usuario</label>
+      <input type="text" id="cfg-username" placeholder="Usuario">
 
-    <label>Nueva contraseña</label>
-    <div style="display:flex;gap:5px;align-items:center;">
-      <input type="password" id="cfg-password" placeholder="Contraseña" />
-      <button id="toggle-pass">👁️</button>
-    </div>
+      <label>Nueva contraseña</label>
+      <div class="password-wrapper">
+        <input type="password" id="cfg-password" placeholder="Contraseña" />
+        <button id="toggle-pass">👁️</button>
+      </div>
 
-    <div class="modal-actions">
-      <button id="save-config">Guardar cambios</button>
-      <button id="close-config">Cancelar</button>
+      <div class="modal-actions">
+        <button id="save-config">Guardar cambios</button>
+        <button id="close-config">Cancelar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<link rel="stylesheet" href="./ui/styles/camera_panel.css" />
+  <!-- Contenedor principal: cámara + notificaciones -->
+  <div id="dashboard-content">
+    <div id="dashboard-layout">
+      <!-- Cámara -->
+      <div id="camera-container"></div>
 
-<div id="dashboard-content">
-  <div id="dashboard-layout">
-    <div id="camera-container"></div>
-    <div id="notification-panel"></div>
-    <div id="bottom-panel"></div>
+      <!-- Barra lateral de notificaciones -->
+      <div id="notification-panel"></div>
+    </div>
   </div>
-</div>
-<script type="module" src="./ui/js/dashboard.js"></script>
+
+  <!-- Footer fijo al final -->
+  <div id="bottom-panel">
+    <button>Profesionales</button>
+    <button>Residentes</button>
+  </div>
+
+  <!-- Script principal -->
+  <script type="module" src="./ui/js/dashboard.js"></script>
+</body>
+</html>

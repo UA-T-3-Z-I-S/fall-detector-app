@@ -1,11 +1,12 @@
 #camera-panel {
+  width: 790px;      /* ancho fijo del cuadro */
+  height: 420px;     /* alto proporcional 16:9 */
   background: #181818;
   border-radius: 12px;
-  padding: 10px;
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
 }
 
 .camera-feed {
@@ -18,17 +19,16 @@
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
 }
 
-.camera-feed video {
+.camera-feed video,
+.camera-feed img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: none; /* Oculto por defecto */
+  display: none; /* video oculto hasta que esté activo */
 }
 
 #cam-placeholder {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  display: block; /* placeholder visible por defecto */
   filter: brightness(0.5);
 }
 
@@ -37,8 +37,9 @@
   bottom: 8px;
   left: 8px;
   background: rgba(0, 0, 0, 0.6);
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 6px;
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: #fff;
+  pointer-events: none;
 }

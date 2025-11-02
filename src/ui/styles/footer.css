@@ -1,0 +1,28 @@
+#footer-panel {
+  position: fixed;        /* lo fija en la parte inferior */
+  bottom: 0;              /* al borde inferior de la ventana */
+  left: 0;                /* al borde izquierdo */
+  width: 100%;
+  height: 60px;
+  background: #FFD54A;    /* mismo amarillo que notificaciones */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-top: 1px solid #e6c200;
+  z-index: 50;            /* encima de otros elementos */
+}
+
+#footer-panel button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #222;       /* contraste con amarillo */
+  color: #FFD54A;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#footer-panel button:hover {
+  background: #444;
+}
