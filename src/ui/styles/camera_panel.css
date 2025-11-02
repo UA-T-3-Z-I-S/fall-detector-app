@@ -1,0 +1,44 @@
+#camera-panel {
+  background: #181818;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.camera-feed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.camera-feed video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none; /* Oculto por defecto */
+}
+
+#cam-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+}
+
+.camera-label {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: #fff;
+}

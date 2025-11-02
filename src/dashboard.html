@@ -1,90 +1,42 @@
-<link rel="stylesheet" href="./ui/styles/topbar.css" />
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./ui/styles/topbar.css" />
+    <link rel="stylesheet" href="./ui/styles/dashboard.css" />
+    <title>Dashboard - Sistema IA</title>
+  </head>
+
 <div id="topbar-container"></div>
 
-<div id="dashboard-content">
-  <!-- Aquí irá contenido del dashboard -->
+<!-- Modal configuración -->
+<div id="config-modal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Configuración de usuario</h2>
+
+    <label>Nuevo nombre de usuario</label>
+    <input type="text" id="cfg-username" placeholder="Usuario">
+
+    <label>Nueva contraseña</label>
+    <div style="display:flex;gap:5px;align-items:center;">
+      <input type="password" id="cfg-password" placeholder="Contraseña" />
+      <button id="toggle-pass">👁️</button>
+    </div>
+
+    <div class="modal-actions">
+      <button id="save-config">Guardar cambios</button>
+      <button id="close-config">Cancelar</button>
+    </div>
+  </div>
 </div>
 
-<script>
-  // Cargar topbar dinámicamente
-  fetch('./ui/components/topbar.html')
-    .then((res) => res.text())
-    .then(async (html) => {
-      document.getElementById('topbar-container').innerHTML = html;
+<link rel="stylesheet" href="./ui/styles/camera_panel.css" />
 
-      const logoutBtn = document.getElementById('logout-btn');
-      const engineToggle = document.getElementById('engine-toggle');
-      const switchEl = document.querySelector('.slider');
-      const label = document.getElementById('engine-label');
-
-      const setState = (state, text) => {
-        label.textContent = text;
-        switch (state) {
-          case 'off':
-            switchEl.style.backgroundColor = '#e74c3c'; // rojo
-            break;
-          case 'starting':
-            switchEl.style.backgroundColor = '#FFD54A'; // amarillo
-            break;
-          case 'on':
-            switchEl.style.backgroundColor = '#4CAF50'; // verde
-            break;
-        }
-      };
-
-      logoutBtn.addEventListener('click', async () => {
-        await window.api.logout();
-      });
-
-      // ✅ Verificar estado del motor al cargar
-      const status = await window.api.checkEngine();
-      if (status.ok && status.running) {
-        engineToggle.checked = true;
-        setState('on', 'Motor operativo');
-      } else {
-        setState('off', 'Motor apagado');
-      }
-
-      // 🧠 Escuchar eventos del motor en tiempo real
-      window.api.onEngineEvent((msg) => {
-        console.log('Evento motor:', msg);
-        if (msg.evento === 'modelo_iniciando') {
-          setState('starting', 'Cargando modelo...');
-        } else if (msg.evento === 'modelo_listo') {
-          setState('starting', 'Esperando cámara...');
-        } else if (msg.evento === 'camara_activa') {
-          setState('on', 'Motor operativo');
-        } else if (msg.evento === 'advertencia' && msg.mensaje?.includes('No se pudo abrir RTSP')) {
-          alert('⚠️ No se pudo abrir la cámara RTSP. El motor se apagó automáticamente.');
-          setState('off', 'Motor apagado');
-          engineToggle.checked = false;
-        } else if (msg.evento === 'motor_finalizado' || msg.evento === 'error') {
-          setState('off', 'Motor detenido');
-          engineToggle.checked = false;
-        }
-      });
-
-      // 🟢 Cambiar estado manualmente desde el switch
-      engineToggle.addEventListener('change', async () => {
-        if (engineToggle.checked) {
-          setState('starting', 'Iniciando motor...');
-          const result = await window.api.startEngine();
-          if (!result.ok) {
-            alert('Error al iniciar motor IA: ' + (result.message || 'desconocido'));
-            setState('off', 'Motor apagado');
-            engineToggle.checked = false;
-          }
-        } else {
-          setState('starting', 'Deteniendo...');
-          const result = await window.api.stopEngine();
-          if (!result.ok) {
-            alert('Error al detener motor IA: ' + (result.message || 'desconocido'));
-            setState('on', 'Motor operativo');
-            engineToggle.checked = true;
-          } else {
-            setState('off', 'Motor apagado');
-          }
-        }
-      });
-    });
-</script>
+<div id="dashboard-content">
+  <div id="dashboard-layout">
+    <div id="camera-container"></div>
+    <div id="notification-panel"></div>
+    <div id="bottom-panel"></div>
+  </div>
+</div>
+<script src="./ui/js/dashboard.js"></script>

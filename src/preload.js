@@ -1,54 +1,25 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 const api = {
+  readEngineConfig: () => ipcRenderer.invoke('read-engine-config'),
   readConfig: async () => {
     try {
-      const res = await ipcRenderer.invoke('read-system-config');
-      return res;
-    } catch (e) {
-      return { ok: false, error: e?.message || String(e) };
-    }
+      return await ipcRenderer.invoke('read-system-config');
+    } catch (e) { return { ok: false, error: e?.message || String(e) }; }
   },
-
   validateLogin: async (username, password) => {
-    try {
-      const res = await ipcRenderer.invoke('validate-login', username, password);
-      return res;
-    } catch (e) {
-      return { ok: false, error: e?.message || String(e) };
-    }
+    try { return await ipcRenderer.invoke('validate-login', username, password); }
+    catch (e) { return { ok: false, error: e?.message || String(e) }; }
   },
-
-  openDashboard: () => {
-    try {
-      ipcRenderer.send('open-dashboard');
-    } catch (e) {
-      console.error('preload openDashboard error:', e);
-    }
-  },
-
-  logout: async () => {
-    try {
-      await ipcRenderer.invoke('logout');
-    } catch (e) {
-      console.error('logout error:', e);
-    }
-  },
-
+  openDashboard: () => ipcRenderer.send('open-dashboard'),
+  logout: async () => ipcRenderer.invoke('logout'),
   checkEngine: () => ipcRenderer.invoke('check-engine-status'),
-
   startEngine: () => ipcRenderer.invoke('start-engine'),
-
   stopEngine: () => ipcRenderer.invoke('stop-engine'),
-
-  // 🧠 Escuchar eventos del motor IA (modelo, cámara, errores, etc.)
-  onEngineEvent: (callback) => ipcRenderer.on('engine-event', (_event, data) => callback(data)),
+  onEngineEvent: (callback) => ipcRenderer.on('engine-event', (_e, data) => callback(data)),
+  readUserConfig: () => ipcRenderer.invoke('read-user-config'),
+  updateUserConfig: (username, password) =>
+    ipcRenderer.invoke('update-user-config', { username, password }),
 };
 
-try {
-  contextBridge.exposeInMainWorld('api', api);
-  console.log('Preload: API expuesta en window.api');
-} catch (e) {
-  console.error('Preload exposición error:', e);
-  globalThis.api = api;
-}
+contextBridge.exposeInMainWorld('api', api);
