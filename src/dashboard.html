@@ -1,25 +1,90 @@
-<link rel="stylesheet" href="./ui/styles/topbar.css">
+<link rel="stylesheet" href="./ui/styles/topbar.css" />
 <div id="topbar-container"></div>
 
 <div id="dashboard-content">
-  <!-- Aquí va el contenido real del dashboard -->
-  <h2>Bienvenido al Dashboard</h2>
+  <!-- Aquí irá contenido del dashboard -->
 </div>
 
 <script>
-  // Cargar topbar
+  // Cargar topbar dinámicamente
   fetch('./ui/components/topbar.html')
-    .then(res => res.text())
-    .then(html => {
+    .then((res) => res.text())
+    .then(async (html) => {
       document.getElementById('topbar-container').innerHTML = html;
 
-      // Asociar función al botón de cerrar sesión
       const logoutBtn = document.getElementById('logout-btn');
-      logoutBtn.addEventListener('click', () => {
-        // Por ejemplo, volver al login
-        window.location.href = 'index.html';
-        // O si quieres usar Electron IPC:
-        // window.api.logout();
+      const engineToggle = document.getElementById('engine-toggle');
+      const switchEl = document.querySelector('.slider');
+      const label = document.getElementById('engine-label');
+
+      const setState = (state, text) => {
+        label.textContent = text;
+        switch (state) {
+          case 'off':
+            switchEl.style.backgroundColor = '#e74c3c'; // rojo
+            break;
+          case 'starting':
+            switchEl.style.backgroundColor = '#FFD54A'; // amarillo
+            break;
+          case 'on':
+            switchEl.style.backgroundColor = '#4CAF50'; // verde
+            break;
+        }
+      };
+
+      logoutBtn.addEventListener('click', async () => {
+        await window.api.logout();
+      });
+
+      // ✅ Verificar estado del motor al cargar
+      const status = await window.api.checkEngine();
+      if (status.ok && status.running) {
+        engineToggle.checked = true;
+        setState('on', 'Motor operativo');
+      } else {
+        setState('off', 'Motor apagado');
+      }
+
+      // 🧠 Escuchar eventos del motor en tiempo real
+      window.api.onEngineEvent((msg) => {
+        console.log('Evento motor:', msg);
+        if (msg.evento === 'modelo_iniciando') {
+          setState('starting', 'Cargando modelo...');
+        } else if (msg.evento === 'modelo_listo') {
+          setState('starting', 'Esperando cámara...');
+        } else if (msg.evento === 'camara_activa') {
+          setState('on', 'Motor operativo');
+        } else if (msg.evento === 'advertencia' && msg.mensaje?.includes('No se pudo abrir RTSP')) {
+          alert('⚠️ No se pudo abrir la cámara RTSP. El motor se apagó automáticamente.');
+          setState('off', 'Motor apagado');
+          engineToggle.checked = false;
+        } else if (msg.evento === 'motor_finalizado' || msg.evento === 'error') {
+          setState('off', 'Motor detenido');
+          engineToggle.checked = false;
+        }
+      });
+
+      // 🟢 Cambiar estado manualmente desde el switch
+      engineToggle.addEventListener('change', async () => {
+        if (engineToggle.checked) {
+          setState('starting', 'Iniciando motor...');
+          const result = await window.api.startEngine();
+          if (!result.ok) {
+            alert('Error al iniciar motor IA: ' + (result.message || 'desconocido'));
+            setState('off', 'Motor apagado');
+            engineToggle.checked = false;
+          }
+        } else {
+          setState('starting', 'Deteniendo...');
+          const result = await window.api.stopEngine();
+          if (!result.ok) {
+            alert('Error al detener motor IA: ' + (result.message || 'desconocido'));
+            setState('on', 'Motor operativo');
+            engineToggle.checked = true;
+          } else {
+            setState('off', 'Motor apagado');
+          }
+        }
       });
     });
 </script>

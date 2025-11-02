@@ -12,7 +12,7 @@ if (process.defaultApp === false || process.env.NODE_ENV === "production") {
   CONFIG_PATH = path.join(process.cwd(), "system_local.json");
 } else {
   // modo desarrollo
-  CONFIG_PATH = path.join(__dirname, "..", "..", "system_local.json");
+  CONFIG_PATH = path.join(__dirname, "..", "system_local.json");
 }
 
 // === CARGAR CONFIGURACIÓN ===
