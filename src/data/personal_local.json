@@ -1,0 +1,14 @@
+[
+    {
+        "id": "string",
+        "nombre": "string",
+        "apellido": "string",
+        "dni": "string",
+        "telefono": "string",
+        "tipo_personal": "string",
+        "estado": "string"
+    },
+    {
+        
+    }
+]
