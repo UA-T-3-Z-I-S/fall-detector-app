@@ -187,7 +187,7 @@ fetch('./ui/components/topbar.html')
       loadCameraPanel();
     });
 
-});const { app, BrowserWindow, ipcMain } = require('electron');
+});
 const path = require('path');
 const fs = require('fs');
 const { spawn, exec } = require('child_process');
