@@ -1,8 +1,38 @@
 <div id="camera-panel">
-  <div class="camera-feed" style="position: relative; width: 640px; height: 360px;">
-    <div id="cam-placeholder" style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">Cargando cámara...</div>
-    <div class="camera-label" style="position: absolute; bottom:5px; left:5px; color:white; z-index:10;"></div>
-    <canvas id="overlay-canvas" width="640" height="360"
-            style="position:absolute; top:0; left:0; z-index:5; pointer-events:none;"></canvas>
+  <div class="camera-feed">
+    
+    <!-- ⚙️ Botón Configuración -->
+    <button id="cam-settings-btn" class="cam-settings-btn">⚙️</button>
+
+    <div id="cam-placeholder"
+         style="position:absolute; top:0; left:0; width:100%; height:100%;
+                display:flex; align-items:center; justify-content:center;">
+      Cargando cámara...
+    </div>
+
+    <div class="camera-label"
+         style="position:absolute; bottom:5px; left:5px; color:white; z-index:10;">
+    </div>
+
+    <canvas id="overlay-canvas"></canvas>
+
+  </div>
+</div>
+
+<!-- Modal Configuración Cámara -->
+<div id="cam-config-modal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>Configurar Cámara</h3>
+
+    <label>Nombre:</label>
+    <input id="cfg-camera-name" type="text">
+
+    <label>URL RTSP:</label>
+    <input id="cfg-camera-url" type="text">
+
+    <div class="btn-group">
+      <button id="cfg-save">Guardar</button>
+      <button id="cfg-cancel">Cancelar</button>
+    </div>
   </div>
 </div>
