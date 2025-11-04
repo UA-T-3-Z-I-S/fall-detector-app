@@ -34,8 +34,12 @@ const api = {
   // --- MongoDB vía main ---
   queryMongo: (collection, query = {}) =>
     ipcRenderer.invoke('mongo-query', { collection, query }),
+  
   insertMongo: (collection, doc) =>
     ipcRenderer.invoke('mongo-insert', { collection, doc }),
+
+  updateMongo: (collection, id, data) =>
+    ipcRenderer.invoke('mongo-update', { collection, id, data }),
 
   // --- UUID v4 puro JS ---
   generateUUID: () => {

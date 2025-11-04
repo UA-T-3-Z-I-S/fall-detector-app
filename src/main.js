@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const { stopEngineSilently } = require('./main/EngineController');
+const { MongoClient, ObjectId } = require('mongodb');
 
 global.APP_ROOT = __dirname;
 
@@ -21,7 +22,6 @@ try {
 }
 
 // --- MONGO ---
-const { MongoClient } = require('mongodb');
 const client = new MongoClient(mongoConfig.MONGO_URI);
 let db;
 
@@ -45,6 +45,35 @@ ipcMain.handle('mongo-insert', async (_e, { collection, doc }) => {
   return db.collection(collection).insertOne(doc);
 });
 
+// --- ACTUALIZAR MONGO ---
+ipcMain.handle('mongo-update', async (_e, { collection, id, data }) => {
+  console.log('[IPC] mongo-update llamado con:', { collection, id, data });
+
+  const db = await getDB();
+
+  // Reconstruir ObjectId en el main
+  let objectId;
+  try {
+    objectId = id instanceof ObjectId
+      ? id
+      : new ObjectId(id._id?.buffer || id.buffer || id); // se adapta si viene como buffer serializado
+  } catch (err) {
+    console.error('Error convirtiendo _id a ObjectId:', id, err);
+    throw err;
+  }
+
+  // NO incluir _id en $set para no violar la inmutabilidad
+  const { _id, ...dataToSet } = data;
+
+  const result = await db.collection(collection).updateOne(
+    { _id: objectId },
+    { $set: dataToSet }
+  );
+
+  console.log('[Mongo] updateOne result:', result);
+  return result;
+});
+
 // --- Cámara (servidor externo) ---
 function startCameraServer() {
   const serverPath = path.join(global.APP_ROOT, 'server/camera_server.js');
@@ -65,13 +94,7 @@ function startCameraServer() {
 
 // --- Crear ventana principal ---
 async function createWindow() {
-  // 🔹 Inicializamos MongoDB al arrancar
-  try {
-    await getDB();
-  } catch (err) {
-    console.error('[Main] Error inicializando DB:', err);
-  }
-
+  try { await getDB(); } catch (err) { console.error('[Main] Error inicializando DB:', err); }
   startCameraServer();
 
   mainWindow = new BrowserWindow({
@@ -84,7 +107,6 @@ async function createWindow() {
     },
   });
 
-  // Configuración de IPC adicionales si existen
   try {
     const { setupIpcHandlers } = require('./main/IpcHandlers');
     setupIpcHandlers(mainWindow);
@@ -92,7 +114,6 @@ async function createWindow() {
     console.warn('[Main] No se pudo cargar setupIpcHandlers:', err);
   }
 
-  // Cargar la ventana inicial según USER_SESSION
   try {
     if (mongoConfig.USER_SESSION?.active) {
       mainWindow.loadFile(path.join(global.APP_ROOT, 'dashboard.html'));

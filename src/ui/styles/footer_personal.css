@@ -153,6 +153,7 @@ button:hover {
 
 /* Colores de acción */
 button.edit-btn { background: #ffeb3b; color: #000; }
+button.save-btn { background: #2ac634; color: #fff; }
 button.cancel-btn { background: #f44336; color: #fff; }
 button.toggle-btn { background: #2196f3; color: #fff; }
 
