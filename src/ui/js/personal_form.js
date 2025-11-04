@@ -182,7 +182,7 @@ export async function openStaffFormModal() {
         updated_at:new Date()
       };
 
-      await window.api.insertMongo('staff',newStaff);
+      await window.api.insertMongo('personal_albergue',newStaff);
       console.log('✅ Nuevo personal agregado', newStaff);
 
       modal.classList.add('hidden');

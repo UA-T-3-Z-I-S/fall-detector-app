@@ -8,12 +8,12 @@ export async function loadTipos() {
 }
 
 export async function loadStaff() {
-  allStaff = await window.api.queryMongo('staff');
+  allStaff = await window.api.queryMongo('personal_albergue');
 }
 
 // updateStaff apunta a _id, no a id
 export async function updateStaff(_id, data) {
-  await window.api.updateMongo('staff', _id, data);
+  await window.api.updateMongo('personal_albergue', _id, data);
 
   const index = allStaff.findIndex(s => s._id === _id);
   if (index > -1) allStaff[index] = { ...allStaff[index], ...data };

@@ -69,7 +69,7 @@ export function renderTable(page = 1, filter = '') {
 
     tr.querySelector('.toggle-btn').addEventListener('click', async () => {
       staff.estado = !staff.estado;
-      await updateStaff('staff', staff._id, { ...staff });
+      await updateStaff(staff._id, { ...staff });
       document.dispatchEvent(new Event('staff-updated'));
     });
 
