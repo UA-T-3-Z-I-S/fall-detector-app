@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="./ui/styles/personal_form.css" />
+
+<div id="modal-staff-form" class="modal hidden">
+  <div class="modal-content">
+    <h2>Agregar Nuevo Personal</h2>
+
+    <form id="staff-form" novalidate>
+      <label>Nombre</label>
+      <input type="text" name="nombre" maxlength="30" required />
+
+      <label>Apellido</label>
+      <input type="text" name="apellido" maxlength="30" required />
+
+      <label>DNI</label>
+      <input type="text" name="dni" maxlength="8" required />
+
+      <label>Teléfono</label>
+      <input type="text" name="telefono" maxlength="9" />
+
+      <label>Tipo</label>
+      <select name="tipo" id="tipo-dropdown" required>
+        <option value="">Seleccione tipo</option>
+      </select>
+
+      <label>Horario</label>
+      <div id="horario-container">
+        <div class="horario-row-wrapper">
+          <div class="horario-row">
+            <select name="dia" required>
+              <option value="lunes">Lunes</option>
+              <option value="martes">Martes</option>
+              <option value="miercoles">Miércoles</option>
+              <option value="jueves">Jueves</option>
+              <option value="viernes">Viernes</option>
+              <option value="sabado">Sábado</option>
+              <option value="domingo">Domingo</option>
+            </select>
+            <input type="time" name="hora_inicio" required />
+            <input type="time" name="hora_fin" required />
+            <button type="button" class="delete-horario-btn" style="margin-left:6px;">Eliminar</button>
+          </div>
+          <span class="horario-error" style="color:#f44336; font-size:0.85em; display:block; margin-top:4px;"></span>
+        </div>
+      </div>
+
+      <button type="button" id="add-horario-btn">Agregar otro horario</button>
+
+      <div class="modal-buttons">
+        <button type="submit">Guardar</button>
+        <button type="button" id="close-form-btn">Cerrar</button>
+      </div>
+    </form>
+  </div>
+</div>

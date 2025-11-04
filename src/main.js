@@ -1,16 +1,51 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const { stopEngineSilently } = require('./main/EngineController');
 
 global.APP_ROOT = __dirname;
-
-const { setupIpcHandlers } = require('./main/IpcHandlers');
-const { stopEngineSilently } = require('./main/EngineController');
 
 let mainWindow;
 let cameraServerProcess;
 
+// --- CARGAR CONFIGURACIÓN ---
+let mongoConfig;
+try {
+  const cfgPath = path.join(global.APP_ROOT, 'system_local.json');
+  const raw = fs.readFileSync(cfgPath, 'utf8');
+  mongoConfig = JSON.parse(raw);
+} catch (err) {
+  console.error('[Main] Error leyendo system_local.json:', err);
+  process.exit(1);
+}
+
+// --- MONGO ---
+const { MongoClient } = require('mongodb');
+const client = new MongoClient(mongoConfig.MONGO_URI);
+let db;
+
+async function getDB() {
+  if (!db) {
+    await client.connect();
+    db = client.db(mongoConfig.MONGO_DB_NAME);
+    console.log(`✅ Conectado a MongoDB Atlas (DB: ${mongoConfig.MONGO_DB_NAME})`);
+  }
+  return db;
+}
+
+// --- IPC HANDLERS ---
+ipcMain.handle('mongo-query', async (_e, { collection, query = {} }) => {
+  const db = await getDB();
+  return db.collection(collection).find(query).toArray();
+});
+
+ipcMain.handle('mongo-insert', async (_e, { collection, doc }) => {
+  const db = await getDB();
+  return db.collection(collection).insertOne(doc);
+});
+
+// --- Cámara (servidor externo) ---
 function startCameraServer() {
   const serverPath = path.join(global.APP_ROOT, 'server/camera_server.js');
 
@@ -28,8 +63,16 @@ function startCameraServer() {
   });
 }
 
-function createWindow() {
-  startCameraServer(); // ⬅ arrancamos el servidor de la cámara antes de crear la ventana
+// --- Crear ventana principal ---
+async function createWindow() {
+  // 🔹 Inicializamos MongoDB al arrancar
+  try {
+    await getDB();
+  } catch (err) {
+    console.error('[Main] Error inicializando DB:', err);
+  }
+
+  startCameraServer();
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -41,28 +84,32 @@ function createWindow() {
     },
   });
 
-  setupIpcHandlers(mainWindow);
-
-  const cfgPath = path.join(global.APP_ROOT, 'system_local.json');
+  // Configuración de IPC adicionales si existen
   try {
-    const raw = fs.readFileSync(cfgPath, 'utf8');
-    const cfg = JSON.parse(raw);
-    if (cfg.USER_SESSION?.active) {
+    const { setupIpcHandlers } = require('./main/IpcHandlers');
+    setupIpcHandlers(mainWindow);
+  } catch (err) {
+    console.warn('[Main] No se pudo cargar setupIpcHandlers:', err);
+  }
+
+  // Cargar la ventana inicial según USER_SESSION
+  try {
+    if (mongoConfig.USER_SESSION?.active) {
       mainWindow.loadFile(path.join(global.APP_ROOT, 'dashboard.html'));
     } else {
       mainWindow.loadFile(path.join(global.APP_ROOT, 'index.html'));
     }
   } catch (err) {
-    console.error('Error leyendo config:', err);
+    console.error('[Main] Error cargando ventana inicial:', err);
     mainWindow.loadFile(path.join(global.APP_ROOT, 'index.html'));
   }
 }
 
+// --- Eventos de app ---
 app.whenReady().then(createWindow);
 
 app.on('will-quit', () => {
   stopEngineSilently();
-  // 🔹 cerrar camera server si está corriendo
   if (cameraServerProcess) cameraServerProcess.kill('SIGINT');
 });
 
