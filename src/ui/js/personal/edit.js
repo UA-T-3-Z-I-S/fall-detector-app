@@ -78,14 +78,21 @@ export function makeRowEditable(tr, staff) {
   `;
 
   cAct.querySelector('.save-btn').addEventListener('click', async () => {
+    // Conversión explícita a boolean
+    const estadoValue = cEst.querySelector('select').value === 'true';
+    const testValue = cTest.querySelector('select').value === 'true';
+
     await updateStaff(staff._id, {
       ...staff,
       nombre: inputNombre.value.trim(),
       apellido: inputApellido.value.trim(),
       dni: inputDni.value.trim(),
       telefono: inputTel.value.trim(),
-      horarios: staff.horarios
+      horarios: staff.horarios,
+      estado: estadoValue,
+      test: testValue
     });
+
     document.dispatchEvent(new Event('staff-updated'));
   });
 
@@ -103,7 +110,8 @@ function restoreRowEvents(tr, staff) {
   );
 
   tr.querySelector('.toggle-btn')?.addEventListener('click', async () => {
-    staff.estado = !staff.estado;
+    // Conversión a boolean antes de enviar
+    staff.estado = !Boolean(staff.estado);
     await updateStaff(staff._id, { ...staff });
     document.dispatchEvent(new Event('staff-updated'));
   });
