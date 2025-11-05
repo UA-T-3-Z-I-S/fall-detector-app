@@ -63,11 +63,13 @@ ipcMain.handle('mongo-update', async (_e, { collection, id, data }) => {
   }
 
   // NO incluir _id en $set para no violar la inmutabilidad
-  const { _id, ...dataToSet } = data;
+  const { _id, updated_at, ...dataToSet } = data;
 
   const result = await db.collection(collection).updateOne(
     { _id: objectId },
-    { $set: dataToSet }
+    { $set: dataToSet,
+      $currentDate: { updated_at: true }
+    }
   );
 
   console.log('[Mongo] updateOne result:', result);
