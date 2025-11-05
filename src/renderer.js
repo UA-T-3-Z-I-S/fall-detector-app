@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const res = await window.api.readConfig();
     if (res.ok && res.config && res.config.username) {
-      info.textContent = `Usuario por defecto: ${res.config.username}`;
+      info.textContent = ``;
     } else {
       info.textContent = 'Configuración cargada (usuario no disponible)';
     }

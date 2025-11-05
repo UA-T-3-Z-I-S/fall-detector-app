@@ -213,3 +213,91 @@ html, body {
 #close-config:hover {
   background: #444;
 }
+
+.modal-config {
+  background: #181818;           
+  color: #FFD54A;                
+  padding: 16px 24px;            /* más compacto que modal-content */
+  border-radius: 12px;
+  width: 320px;                  /* ancho reducido */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.modal-config h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.3em;
+  color: #FFD54A;
+  text-align: center;
+}
+
+.modal-config label {
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.modal-config input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #222;
+  color: #FFD54A;
+  font-size: 0.9em;
+}
+
+.password-wrapper {
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.password-wrapper button {
+  padding: 6px 10px;
+  background: #FFD54A;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.password-wrapper button:hover {
+  background: #e6c200;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#save-config {
+  background: #FFD54A;
+  color: #222;
+}
+
+#save-config:hover {
+  background: #e6c200;
+}
+
+#close-config {
+  background: #222;
+  color: #FFD54A;
+  border: 1px solid #FFD54A;
+}
+
+#close-config:hover {
+  background: #444;
+}

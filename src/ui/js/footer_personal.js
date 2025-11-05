@@ -18,7 +18,7 @@ export async function initModalPersonal() {
     const paginationContainer = modalPersonal.querySelector('.pagination');
 
     window.personalState = {
-      ITEMS_PER_PAGE: 10,
+      ITEMS_PER_PAGE: 6,
       currentPage: 1,
       paginationContainer,
       searchInput
