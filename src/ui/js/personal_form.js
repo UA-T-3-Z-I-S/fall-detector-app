@@ -158,13 +158,13 @@ export async function openStaffFormModal() {
         else clearError(input);
       });
 
-      const horarios = Array.from(horarioContainer.children).map(wrapper=>({
-        dia: wrapper.querySelector('select[name="dia"]').value,
+      const horario = Array.from(horarioContainer.children).map(wrapper=>({
+        dia: wrapper.querySelector('select[name="dia"]').value.toLowerCase(),
         hora_inicio: wrapper.querySelector('input[name="hora_inicio"]').value,
         hora_fin: wrapper.querySelector('input[name="hora_fin"]').value
       }));
 
-      if(!validarHorarios(horarios)) hasError=true;
+      if(!validarHorarios(horario)) hasError=true;
       if(hasError) return;
 
       // --- 🔑 Validación DNI y teléfono únicos ---
@@ -191,7 +191,7 @@ export async function openStaffFormModal() {
         tipo: tipoDropdown.value,
         estado:true,
         test:false,
-        horario:horarios,
+        horario,
         pwas:[],
         created_at:new Date(),
         updated_at:new Date()

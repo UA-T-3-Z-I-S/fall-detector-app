@@ -76,7 +76,7 @@ export function makeRowEditable(tr, resident) {
 
     // --- 🔑 Validación DNI único ---
     const dniExists = await window.api.queryMongo('residentes_albergue', { dni });
-    if (dniExists.some(r => r._id !== resident._id)) {
+    if (dniExists.some(r => String(r._id) !== String(resident._id))) {
       alert('⛔ DNI ya registrado');
       return;
     }

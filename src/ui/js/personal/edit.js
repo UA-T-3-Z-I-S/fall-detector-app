@@ -38,17 +38,14 @@ function haySolape(staff, index, dia, ini, fin) {
 export function makeRowEditable(tr, staff) {
   const { tiposMap } = getStaffData();
 
-  if (!Array.isArray(staff.horarios) || staff.horarios.length === 0) {
-    if (Array.isArray(staff.horario) && staff.horario.length) {
-      staff.horarios = staff.horario.map(h => ({
-        dia: h.dia ? h.dia.toUpperCase() : "LUNES",
-        hora_inicio: h.hora_inicio || h.inicio || "",
-        hora_fin: h.hora_fin || h.fin || ""
-      }));
-    } else {
-      staff.horarios = [];
-    }
-  }
+  // Generar temporalmente los horarios para edición
+  const tempHorarios = Array.isArray(staff.horario) ? staff.horario.map(h => ({
+    dia: h.dia ? h.dia.toUpperCase() : "LUNES",
+    hora_inicio: h.hora_inicio || h.inicio || "",
+    hora_fin: h.hora_fin || h.fin || ""
+  })) : [];
+
+  staff.horarios = [...tempHorarios]; // solo para edición
 
   const originalHTML = tr.outerHTML;
   const parent = tr.parentElement;
@@ -81,29 +78,34 @@ export function makeRowEditable(tr, staff) {
     const estadoValue = cEst.querySelector('select').value === 'true';
     const testValue = cTest.querySelector('select').value === 'true';
 
-    // --- 🔑 Validación de duplicados ---
     const dni = inputDni.value.trim();
     const telefono = inputTel.value.trim();
 
+    // Validación DNI/telefono
     const dniExists = await window.api.queryMongo('personal_albergue', { dni });
-    if (dniExists.some(s => s._id !== staff._id)) {
+    if (dniExists.some(s => String(s._id) !== String(staff._id))) {
       alert('⛔ DNI ya registrado');
       return;
     }
 
     const telExists = await window.api.queryMongo('personal_albergue', { telefono });
-    if (telExists.some(s => s._id !== staff._id)) {
+    if (telExists.some(s => String(s._id) !== String(staff._id))) {
       alert('⛔ Teléfono ya registrado');
       return;
     }
 
+    // Guardar cambios
     await updateStaff(staff._id, {
       ...staff,
       nombre: inputNombre.value.trim(),
       apellido: inputApellido.value.trim(),
       dni,
       telefono,
-      horarios: staff.horarios,
+      horario: staff.horarios.map(h => ({
+        dia: h.dia.toLowerCase(),
+        hora_inicio: h.hora_inicio,
+        hora_fin: h.hora_fin
+      })),
       estado: estadoValue,
       test: testValue
     });
