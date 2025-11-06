@@ -8,6 +8,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   await initTopbar();
   await initCameraPanel();
   initUserConfigModal();
-  await initNotificationsPanel();
+  initNotificationsPanel();
   await initFooterPanel();
 });

@@ -24,8 +24,8 @@ export async function initCameraPanel() {
   setInterval(updateCameraLabel, 5000);
 
   const canvas = document.getElementById('overlay-canvas');
-  canvas.width = 640;
-  canvas.height = 360;
+  canvas.width = 750;
+  canvas.height = 420;
   const ctx = canvas.getContext('2d');
 
   const modal = document.getElementById('cam-config-modal');

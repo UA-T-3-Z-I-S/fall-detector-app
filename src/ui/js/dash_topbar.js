@@ -1,4 +1,3 @@
-// topbar.js
 export async function initTopbar() {
   const html = await fetch('./ui/components/topbar.html').then(res => res.text());
   document.getElementById('topbar-container').innerHTML = html;
@@ -8,8 +7,8 @@ export async function initTopbar() {
   const switchEl = document.querySelector('.slider');
   const label = document.getElementById('engine-label');
   const openConfigBtn = document.getElementById('open-config-btn');
+  const testAlertBtn = document.getElementById('test-alert-btn');
 
-  // Función para cambiar visualmente el switch
   const setState = (state, text) => {
     label.textContent = text;
     switch (state) {
@@ -69,5 +68,30 @@ export async function initTopbar() {
     }
   });
 
-  return { setState }; // si quieres exponer funciones
+  testAlertBtn.addEventListener('click', async () => {
+    try {
+      const engineConfig = await window.api.readEngineConfig();
+      const cameraName = 'PRB-' + (engineConfig?.CAMERA_NAME || 'TEST'); // nombre discreto
+
+      const simulatedFall = {
+        evento: 'caida_detectada',
+        camara: cameraName,
+        timestamp: new Date().toISOString(),
+        buffer_ts: new Date(Date.now() - 20000).toISOString(),
+        estado: 0 // 0 = prueba
+      };
+
+      // Guardar en MongoDB
+      await window.api.insertMongo("notificaciones_albergue", simulatedFall);
+      console.log('💾 Alerta de prueba simulada guardada:', simulatedFall);
+
+      // Enviar notificación al panel (propaga al renderer)
+      window.api.sendNotification(simulatedFall);
+
+    } catch (err) {
+      console.error('❌ Error simulando alerta de prueba:', err);
+    }
+  });
+
+  return { setState };
 }

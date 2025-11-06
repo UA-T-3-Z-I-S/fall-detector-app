@@ -2,10 +2,9 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+global.APP_ROOT = __dirname;
 const { stopEngineSilently } = require('./main/EngineController');
 const { MongoClient, ObjectId } = require('mongodb');
-
-global.APP_ROOT = __dirname;
 
 let mainWindow;
 let cameraServerProcess;
@@ -45,35 +44,36 @@ ipcMain.handle('mongo-insert', async (_e, { collection, doc }) => {
   return db.collection(collection).insertOne(doc);
 });
 
-// --- ACTUALIZAR MONGO ---
 ipcMain.handle('mongo-update', async (_e, { collection, id, data }) => {
   console.log('[IPC] mongo-update llamado con:', { collection, id, data });
 
   const db = await getDB();
 
-  // Reconstruir ObjectId en el main
   let objectId;
   try {
     objectId = id instanceof ObjectId
       ? id
-      : new ObjectId(id._id?.buffer || id.buffer || id); // se adapta si viene como buffer serializado
+      : new ObjectId(id._id?.buffer || id.buffer || id);
   } catch (err) {
     console.error('Error convirtiendo _id a ObjectId:', id, err);
     throw err;
   }
 
-  // NO incluir _id en $set para no violar la inmutabilidad
   const { _id, updated_at, ...dataToSet } = data;
 
   const result = await db.collection(collection).updateOne(
     { _id: objectId },
-    { $set: dataToSet,
-      $currentDate: { updated_at: true }
-    }
+    { $set: dataToSet, $currentDate: { updated_at: true } }
   );
 
   console.log('[Mongo] updateOne result:', result);
   return result;
+});
+
+// --- Canal para notificaciones en tiempo real ---
+ipcMain.on('notificacion-en-panel', (_e, notif) => {
+  console.log('📡 Notificación enviada al panel:', notif);
+  if (mainWindow) mainWindow.webContents.send('notificacion-en-panel', notif);
 });
 
 // --- Cámara (servidor externo) ---
@@ -100,7 +100,7 @@ async function createWindow() {
   startCameraServer();
 
   mainWindow = new BrowserWindow({
-    width: 1280,
+    width: 1120,
     height: 720,
     webPreferences: {
       preload: path.join(global.APP_ROOT, 'preload.js'),

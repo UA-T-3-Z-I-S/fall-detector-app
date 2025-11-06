@@ -85,6 +85,17 @@ async function startEngine(mainWindow) {
               mainWindow.webContents.send('engine-event', { evento: 'motor_apagado_rtsp' });
             }
           }
+
+            if (msg.evento === 'caida_detectada') {
+            console.log(`⚠️ Caída detectada en ${msg.camara} a las ${msg.timestamp}`);
+            mainWindow.webContents.send('notification', {
+                tipo: 'caida',
+                camara: msg.camara,
+                timestamp: msg.timestamp,
+                buffer_ts: msg.buffer_ts // tu buffer de la caída
+            });
+            }
+
         } catch {
           console.log(`Motor ${source} no JSON:`, line);
         }
