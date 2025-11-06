@@ -2,17 +2,12 @@
 const { ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { startEngine, stopEngine, stopEngineSilently, checkEngineStatus, getEngineProcess } = require('./EngineController');
-// Eliminado getMainWindow para evitar ciclo de dependencias
+const { startEngine, stopEngine, stopEngineSilently, checkEngineStatus } = require('./EngineController');
 
 const BASE_DIR = global.APP_ROOT;
 const CFG_PATH = path.join(BASE_DIR, 'system_local.json');
 const ENGINE_CFG_PATH = path.join(BASE_DIR, 'engine', 'config_local.json');
 
-/**
- * Función central para leer system_local.json
- * @returns {object} El objeto de configuración completo.
- */
 function readSystemConfigInternal() {
     if (!fs.existsSync(CFG_PATH)) {
         throw new Error('No existe system_local.json');
@@ -21,15 +16,15 @@ function readSystemConfigInternal() {
     return JSON.parse(raw);
 }
 
-/**
- * Registra todos los manejadores IPC (ipcMain.handle/on)
- * @param {BrowserWindow} mainWindow - La ventana principal de Electron.
- */
 function setupIpcHandlers(mainWindow) {
-    // ============================================================
-    // ⚙️ FUNCIONES COMUNES (Tu lógica anterior)
-    // ============================================================
+    if (ipcMain._handlersSetup) {
+        console.log('⚠ IPC handlers ya están registrados, saltando duplicados.');
+        return;
+    }
 
+    // ==========================
+    // Config y login
+    // ==========================
     ipcMain.handle('read-system-config', async () => {
         try {
             const cfg = readSystemConfigInternal();
@@ -39,7 +34,7 @@ function setupIpcHandlers(mainWindow) {
         }
     });
 
-    ipcMain.handle('validate-login', async (event, username, password) => {
+    ipcMain.handle('validate-login', async (_event, username, password) => {
         try {
             const cfg = readSystemConfigInternal();
             const expectedUser = cfg.USER_LOGIN?.username ?? '';
@@ -63,7 +58,6 @@ function setupIpcHandlers(mainWindow) {
             const cfg = readSystemConfigInternal();
             cfg.USER_SESSION.active = false;
             fs.writeFileSync(CFG_PATH, JSON.stringify(cfg, null, 2));
-            // Usar la referencia mainWindow pasada por setupIpcHandlers
             if (mainWindow && !mainWindow.isDestroyed()) {
                 stopEngineSilently();
                 mainWindow.loadFile(path.join(BASE_DIR, 'index.html'));
@@ -75,84 +69,79 @@ function setupIpcHandlers(mainWindow) {
         }
     });
 
-    ipcMain.on('open-dashboard', () => {
-        try {
+    if (!ipcMain._openDashboardRegistered) {
+        ipcMain.on('open-dashboard', () => {
             if (mainWindow && !mainWindow.isDestroyed()) {
                 mainWindow.loadFile(path.join(BASE_DIR, 'dashboard.html'));
             }
-        } catch (e) {
-            console.error('open-dashboard error:', e);
-        }
-    });
+        });
+        ipcMain._openDashboardRegistered = true;
+    }
 
-    // ============================================================
-    // 🧠 CONTROL DEL MOTOR IA (Llama a funciones de EngineController)
-    // ============================================================
+    // ==========================
+    // Motor IA
+    // ==========================
+    if (!ipcMain._engineHandlersRegistered) {
+        ipcMain.handle('start-engine', async () => await startEngine(mainWindow));
+        ipcMain.handle('stop-engine', async () => await stopEngine());
+        ipcMain.handle('check-engine-status', async () => await checkEngineStatus());
+        ipcMain._engineHandlersRegistered = true;
+    }
 
-    ipcMain.handle('start-engine', async () => {
-        // Usar la referencia mainWindow pasada por setupIpcHandlers
-        const result = await startEngine(mainWindow);
-        return result;
-    });
-
-    ipcMain.handle('stop-engine', async () => {
-        return await stopEngine();
-    });
-
-    ipcMain.handle('check-engine-status', async () => {
-        return await checkEngineStatus();
-    });
-
-
-    // ============================================================
-    // ⚙️ Configuración de usuario
-    // ============================================================
-
-    ipcMain.handle('read-user-config', async () => {
-        try {
-            const cfg = readSystemConfigInternal();
-            return { ok: true, config: { username: cfg.USER_LOGIN?.username ?? null } };
-        } catch (err) {
-            return { ok: false, error: err.message };
-        }
-    });
-
-    ipcMain.handle('update-user-config', async (_event, { username, password }) => {
-        try {
-            const cfg = readSystemConfigInternal();
-            if (username) cfg.USER_LOGIN.username = username;
-            if (password) cfg.USER_LOGIN.password = Buffer.from(password).toString('base64');
-            fs.writeFileSync(CFG_PATH, JSON.stringify(cfg, null, 2));
-            return { ok: true };
-        } catch (err) {
-            return { ok: false, error: err.message };
-        }
-    });
-
-    // ============================================================
-    // 📡 Leer configuración del motor (config_local.json)
-    // ============================================================
-    ipcMain.handle('read-engine-config', async () => {
-        try {
-            if (!fs.existsSync(ENGINE_CFG_PATH)) {
-                return { ok: false, error: 'No se encontró config_local.json en engine.' };
+    // ==========================
+    // Config usuario
+    // ==========================
+    if (!ipcMain._userHandlersRegistered) {
+        ipcMain.handle('read-user-config', async () => {
+            try {
+                const cfg = readSystemConfigInternal();
+                return { ok: true, config: { username: cfg.USER_LOGIN?.username ?? null } };
+            } catch (err) {
+                return { ok: false, error: err.message };
             }
+        });
 
-            const raw = fs.readFileSync(ENGINE_CFG_PATH, 'utf8');
-            const cfg = JSON.parse(raw);
+        ipcMain.handle('update-user-config', async (_event, { username, password }) => {
+            try {
+                const cfg = readSystemConfigInternal();
+                if (username) cfg.USER_LOGIN.username = username;
+                if (password) cfg.USER_LOGIN.password = Buffer.from(password).toString('base64');
+                fs.writeFileSync(CFG_PATH, JSON.stringify(cfg, null, 2));
+                return { ok: true };
+            } catch (err) {
+                return { ok: false, error: err.message };
+            }
+        });
+        ipcMain._userHandlersRegistered = true;
+    }
 
-            return {
-                ok: true,
-                config: {
-                    camera_name: cfg.CAMERA_NAME ?? 'Cámara desconocida',
-                    rtsp_url: cfg.LIVE_CAMERA_URL ?? null,
-                },
-            };
-        } catch (err) {
-            return { ok: false, error: err.message };
-        }
-    });
+    // ==========================
+    // Config motor IA
+    // ==========================
+    if (!ipcMain._engineConfigRegistered) {
+        ipcMain.handle('read-engine-config', async () => {
+            try {
+                if (!fs.existsSync(ENGINE_CFG_PATH)) {
+                    return { ok: false, error: 'No se encontró config_local.json en engine.' };
+                }
+                const raw = fs.readFileSync(ENGINE_CFG_PATH, 'utf8');
+                const cfg = JSON.parse(raw);
+                return {
+                    ok: true,
+                    config: {
+                        camera_name: cfg.CAMERA_NAME ?? 'Cámara desconocida',
+                        rtsp_url: cfg.LIVE_CAMERA_URL ?? null,
+                    },
+                };
+            } catch (err) {
+                return { ok: false, error: err.message };
+            }
+        });
+        ipcMain._engineConfigRegistered = true;
+    }
 
+    ipcMain._handlersSetup = true; // ✅ bandera final
+    console.log('✅ IPC handlers configurados correctamente');
 }
 
 module.exports = { setupIpcHandlers };

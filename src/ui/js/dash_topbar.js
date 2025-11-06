@@ -6,7 +6,6 @@ export async function initTopbar() {
   const engineToggle = document.getElementById('engine-toggle');
   const switchEl = document.querySelector('.slider');
   const label = document.getElementById('engine-label');
-  const openConfigBtn = document.getElementById('open-config-btn');
   const testAlertBtn = document.getElementById('test-alert-btn');
 
   const setState = (state, text) => {
@@ -68,24 +67,25 @@ export async function initTopbar() {
     }
   });
 
+  // --- Botón alerta de prueba ---
   testAlertBtn.addEventListener('click', async () => {
     try {
       const engineConfig = await window.api.readEngineConfig();
-      const cameraName = 'PRB-' + (engineConfig?.CAMERA_NAME || 'TEST'); // nombre discreto
+      const cameraName = (engineConfig?.CAMERA_NAME || 'TEST');
 
       const simulatedFall = {
         evento: 'caida_detectada',
         camara: cameraName,
         timestamp: new Date().toISOString(),
         buffer_ts: new Date(Date.now() - 20000).toISOString(),
-        estado: 0 // 0 = prueba
+        estado: 0
       };
 
       // Guardar en MongoDB
       await window.api.insertMongo("notificaciones_albergue", simulatedFall);
       console.log('💾 Alerta de prueba simulada guardada:', simulatedFall);
 
-      // Enviar notificación al panel (propaga al renderer)
+      // Enviar notificación en vivo al panel
       window.api.sendNotification(simulatedFall);
 
     } catch (err) {
