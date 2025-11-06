@@ -78,16 +78,31 @@ export function makeRowEditable(tr, staff) {
   `;
 
   cAct.querySelector('.save-btn').addEventListener('click', async () => {
-    // Conversión explícita a boolean
     const estadoValue = cEst.querySelector('select').value === 'true';
     const testValue = cTest.querySelector('select').value === 'true';
+
+    // --- 🔑 Validación de duplicados ---
+    const dni = inputDni.value.trim();
+    const telefono = inputTel.value.trim();
+
+    const dniExists = await window.api.queryMongo('personal_albergue', { dni });
+    if (dniExists.some(s => s._id !== staff._id)) {
+      alert('⛔ DNI ya registrado');
+      return;
+    }
+
+    const telExists = await window.api.queryMongo('personal_albergue', { telefono });
+    if (telExists.some(s => s._id !== staff._id)) {
+      alert('⛔ Teléfono ya registrado');
+      return;
+    }
 
     await updateStaff(staff._id, {
       ...staff,
       nombre: inputNombre.value.trim(),
       apellido: inputApellido.value.trim(),
-      dni: inputDni.value.trim(),
-      telefono: inputTel.value.trim(),
+      dni,
+      telefono,
       horarios: staff.horarios,
       estado: estadoValue,
       test: testValue
@@ -110,7 +125,6 @@ function restoreRowEvents(tr, staff) {
   );
 
   tr.querySelector('.toggle-btn')?.addEventListener('click', async () => {
-    // Conversión a boolean antes de enviar
     staff.estado = !Boolean(staff.estado);
     await updateStaff(staff._id, { ...staff });
     document.dispatchEvent(new Event('staff-updated'));

@@ -111,11 +111,19 @@ export async function openResidentFormModal() {
       });
       if(hasError) return;
 
+      // --- 🔑 Validación DNI único ---
+      const dni = inputs.dni.value.trim();
+      const existing = await window.api.queryMongo('residentes_albergue', { dni });
+      if(existing.length > 0){
+        showError(inputs.dni, 'DNI ya registrado');
+        return;
+      }
+
       const newResident = {
         id: generateUUID(),
         nombre: inputs.nombre.value.trim(),
         apellido: inputs.apellido.value.trim(),
-        dni: inputs.dni.value.trim(),
+        dni,
         sexo: sexoDropdown.value,
         fecha_nacimiento: inputs.fecha_nacimiento.value,
         pabellon: pabellonDropdown.value,

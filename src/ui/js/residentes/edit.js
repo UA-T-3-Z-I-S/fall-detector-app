@@ -29,7 +29,6 @@ export function makeRowEditable(tr, resident) {
   const inputFnac = document.createElement('input');
   inputFnac.type = 'date';
   inputFnac.value = resident.fecha_nacimiento ? resident.fecha_nacimiento.slice(0, 10) : '';
-  // Limitar a hoy como máximo
   inputFnac.max = new Date().toISOString().slice(0, 10);
 
   const selectPab = createSelect(pabellonesMap, resident.pabellon || '');
@@ -63,26 +62,22 @@ export function makeRowEditable(tr, resident) {
   cAct.querySelector('.save-btn').addEventListener('click', async () => {
     const nombre = inputNombre.value.trim();
     const apellido = inputApellido.value.trim();
+    const dni = inputDni.value.trim();
     const fecha = inputFnac.value;
 
-    // Validación nombres y apellidos: solo letras y espacios
+    // Validación nombres y apellidos
     const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
-    if (!nameRegex.test(nombre)) {
-      alert("El nombre solo puede contener letras y espacios");
-      return;
-    }
-    if (!nameRegex.test(apellido)) {
-      alert("El apellido solo puede contener letras y espacios");
-      return;
-    }
+    if (!nameRegex.test(nombre)) { alert("El nombre solo puede contener letras y espacios"); return; }
+    if (!nameRegex.test(apellido)) { alert("El apellido solo puede contener letras y espacios"); return; }
 
     // Validación fecha
-    if (!fecha) {
-      alert("La fecha de nacimiento es obligatoria");
-      return;
-    }
-    if (fecha > new Date().toISOString().slice(0, 10)) {
-      alert("La fecha de nacimiento no puede ser futura");
+    if (!fecha) { alert("La fecha de nacimiento es obligatoria"); return; }
+    if (fecha > new Date().toISOString().slice(0, 10)) { alert("La fecha de nacimiento no puede ser futura"); return; }
+
+    // --- 🔑 Validación DNI único ---
+    const dniExists = await window.api.queryMongo('residentes_albergue', { dni });
+    if (dniExists.some(r => r._id !== resident._id)) {
+      alert('⛔ DNI ya registrado');
       return;
     }
 
@@ -90,7 +85,7 @@ export function makeRowEditable(tr, resident) {
       ...resident,
       nombre,
       apellido,
-      dni: inputDni.value.trim(),
+      dni,
       sexo: selectSexo.value,
       fecha_nacimiento: fecha,
       pabellon: selectPab.value

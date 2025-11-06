@@ -167,12 +167,27 @@ export async function openStaffFormModal() {
       if(!validarHorarios(horarios)) hasError=true;
       if(hasError) return;
 
+      // --- 🔑 Validación DNI y teléfono únicos ---
+      const dni = inputs.dni.value.trim();
+      const telefono = inputs.telefono.value.trim();
+      const existing = await window.api.queryMongo('personal_albergue', {
+        $or: [{ dni }, { telefono }]
+      });
+
+      if(existing.length > 0){
+        existing.forEach(doc => {
+          if(doc.dni === dni) showError(inputs.dni, 'DNI ya registrado');
+          if(doc.telefono === telefono) showError(inputs.telefono, 'Teléfono ya registrado');
+        });
+        return; // detener submit si hay duplicados
+      }
+
       const newStaff={
         id: generateUUID(),
         nombre: inputs.nombre.value.trim(),
         apellido: inputs.apellido.value.trim(),
-        dni: inputs.dni.value.trim(),
-        telefono: inputs.telefono.value.trim(),
+        dni,
+        telefono,
         tipo: tipoDropdown.value,
         estado:true,
         test:false,
