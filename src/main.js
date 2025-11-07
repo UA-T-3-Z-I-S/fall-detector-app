@@ -65,6 +65,13 @@ if (!ipcMain._mongoHandlersRegistered) {
     );
   });
 
+  ipcMain.handle('mongo-delete', async (_e, { collection, id }) => {
+    const db = await getDB();
+    const objectId = id instanceof ObjectId ? id : new ObjectId(id);
+    const result = await db.collection(collection).deleteOne({ _id: objectId });
+    return result.deletedCount; // opcional
+  });
+
   ipcMain._mongoHandlersRegistered = true;
 }
 

@@ -1,3 +1,4 @@
+// preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
 const api = {
@@ -24,24 +25,22 @@ const api = {
   stopEngine: () => ipcRenderer.invoke('stop-engine'),
   onEngineEvent: (callback) => ipcRenderer.on('engine-event', (_e, data) => callback(data)),
 
-  sendNotification: (notif) => {
-    ipcRenderer.send('notificacion-en-panel', notif); // canal específico
-  },
-
-  onNotification: (callback) => {
-    ipcRenderer.on('notificacion-en-panel', (_e, data) => callback(data));
-  },
+  sendNotification: (notif) => ipcRenderer.send('notificacion-en-panel', notif),
+  onNotification: (callback) => ipcRenderer.on('notificacion-en-panel', (_e, data) => callback(data)),
 
   readUserConfig: () => ipcRenderer.invoke('read-user-config'),
   updateUserConfig: (username, password) =>
     ipcRenderer.invoke('update-user-config', { username, password }),
 
+  // CRUD Mongo
   queryMongo: (collection, query = {}) =>
     ipcRenderer.invoke('mongo-query', { collection, query }),
   insertMongo: (collection, doc) =>
     ipcRenderer.invoke('mongo-insert', { collection, doc }),
   updateMongo: (collection, id, data) =>
     ipcRenderer.invoke('mongo-update', { collection, id, data }),
+  deleteMongo: (collection, id) =>
+    ipcRenderer.invoke('mongo-delete', { collection, id }), // <-- agregado
 
   generateUUID: () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {

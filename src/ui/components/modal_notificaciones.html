@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="./ui/styles/footer_notificaciones.css" />
+
+<div id="modal-notificaciones" class="modal hidden">
+  <div class="modal-content">
+    <h2>Notificaciones / Caídas</h2>
+
+    <!-- Filtro -->
+    <div class="filters">
+      <input type="text" id="search-notification-input" placeholder="Buscar..." />
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container">
+      <table id="notificaciones-table">
+        <thead>
+          <tr>
+            <th>Ubi / Fecha</th>
+            <th>Respon.</th>
+            <th>Perso.</th>
+            <th>Resi.</th>
+            <th>Caída</th>
+            <th>Severidad</th>
+            <th>Obs.</th>
+            <th>Hora Int.</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination"></div>
+
+    <!-- Botones modal -->
+    <div class="modal-buttons">
+      <button id="close-notification-modal-btn">Cerrar</button>
+    </div>
+  </div>
+</div>
