@@ -1,0 +1,303 @@
+/* Reset básico */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  overflow: hidden; /* evita scroll general */
+}
+
+/* Contenedor principal: columna vertical */
+#dashboard-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Área principal: cámara + notificaciones */
+#dashboard-layout {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  min-height: 0; /* clave para que scroll de notificaciones funcione */
+  box-sizing: flex-start;
+}
+
+#camera-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start; /* empieza arriba */
+  align-items: flex-start;     /* empieza arriba */
+  padding: 0;                  /* opcional, el padding se maneja dentro del panel */
+  min-height: 0;               /* importante para flexbox */
+}
+
+/* Mantener panel de cámara con tamaño fijo */
+#camera-panel {
+  width: 100%;             /* ocupa todo el ancho disponible */
+  max-width: 1200px;       /* opcional: límite máximo para pantallas muy grandes */
+  aspect-ratio: 16 / 9;    /* mantiene la proporción automáticamente */
+  background: #181818;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.camera-feed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.camera-feed video,
+.camera-feed img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+#cam-placeholder {
+  display: block;
+  filter: brightness(0.5);
+}
+
+.camera-label {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  color: #fff;
+  pointer-events: none;
+}
+
+#bottom-panel {
+  height: 60px;
+  width: 100%;
+  background-color: #FFD54A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-top: 1px solid #e6c200;
+  padding: 0 10px;
+  box-sizing: border-box;
+  flex-shrink: 0; /* evita que se comprima */
+}
+
+#bottom-panel button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: #FFD54A;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#bottom-panel button:hover {
+  background: #444;
+}
+
+/* Modal configuración (visible cuando se quita .hidden) */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.6); /* semi-transparente */
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #181818;           /* oscuro como el panel de cámara */
+  color: #FFD54A;                /* texto amarillo */
+  padding: 20px 30px;
+  border-radius: 12px;
+  width: 340px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: Arial, sans-serif;
+}
+
+.modal-content h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.3em;
+  color: #FFD54A;
+  text-align: center;
+}
+
+.modal-content label {
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #222;
+  color: #FFD54A;
+  font-size: 0.9em;
+}
+
+.password-wrapper {
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.password-wrapper button {
+  padding: 6px 10px;
+  background: #FFD54A;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.password-wrapper button:hover {
+  background: #e6c200;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#save-config {
+  background: #FFD54A;
+  color: #222;
+}
+
+#save-config:hover {
+  background: #e6c200;
+}
+
+#close-config {
+  background: #222;
+  color: #FFD54A;
+  border: 1px solid #FFD54A;
+}
+
+#close-config:hover {
+  background: #444;
+}
+
+.modal-config {
+  background: #181818;           
+  color: #FFD54A;                
+  padding: 16px 24px;            /* más compacto que modal-content */
+  border-radius: 12px;
+  width: 320px;                  /* ancho reducido */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.modal-config h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.3em;
+  color: #FFD54A;
+  text-align: center;
+}
+
+.modal-config label {
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+.modal-config input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #222;
+  color: #FFD54A;
+  font-size: 0.9em;
+}
+
+.password-wrapper {
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.password-wrapper button {
+  padding: 6px 10px;
+  background: #FFD54A;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.password-wrapper button:hover {
+  background: #e6c200;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#save-config {
+  background: #FFD54A;
+  color: #222;
+}
+
+#save-config:hover {
+  background: #e6c200;
+}
+
+#close-config {
+  background: #222;
+  color: #FFD54A;
+  border: 1px solid #FFD54A;
+}
+
+#close-config:hover {
+  background: #444;
+}

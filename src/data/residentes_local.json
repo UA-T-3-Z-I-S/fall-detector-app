@@ -1,0 +1,14 @@
+[
+    {
+        "id": "string",
+        "nombre": "string",
+        "apellido": "string",
+        "dni": "string",
+        "sexo": "string",
+        "fecha_nacimiento": "string",
+        "pabellon": "string"
+    },
+    {
+        
+    }
+]

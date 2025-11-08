@@ -1,0 +1,140 @@
+:root {
+  --yellow: #FFD54A;
+  --accent: #F7C948;
+  --text: #2b1b00;
+  --bg: #fffef8;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --engine-off: #e74c3c;
+  --engine-starting: #ffb300;
+  --engine-on: #27ae60;
+}
+
+/* Barra superior */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, var(--yellow), var(--accent));
+  color: var(--text);
+  padding: 10px 24px;
+  height: 64px;
+  box-shadow: 0 4px 10px var(--shadow);
+  font-family: 'Inter', system-ui, sans-serif;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.topbar-left h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Botón logout */
+.topbar-right button {
+  background: var(--text);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.topbar-right button:hover {
+  background: #3b2f0b;
+  transform: translateY(-2px);
+}
+
+/* ===== Switch motor ===== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--engine-off);
+  transition: background-color 0.3s, transform 0.2s;
+  border-radius: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: transform 0.3s;
+  border-radius: 50%;
+}
+
+/* estados */
+.switch.starting .slider { background-color: var(--engine-starting); }
+.switch.on .slider { background-color: var(--engine-on); }
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+#engine-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* evitar que el dashboard quede debajo */
+#dashboard-content {
+  margin-top: 80px;
+  padding: 20px;
+  background: var(--bg);
+}
+
+.slider {
+  background-color: #ccc;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-alert-test {
+  background: #e53935;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 15px;
+  transition: 0.2s;
+}
+
+.btn-alert-test:hover {
+  background: #c62828;
+}

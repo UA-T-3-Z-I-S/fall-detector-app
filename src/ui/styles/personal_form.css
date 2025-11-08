@@ -1,0 +1,171 @@
+/* Fondo modal */
+#modal-staff-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6); /* semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* para que no se salga el modal al crecer */
+  z-index: 10000;
+  overflow-y: auto; /* scroll en toda la ventana */
+  padding: 20px 0; /* espacio superior e inferior */
+  box-sizing: border-box;
+}
+
+/* Contenido del modal */
+#modal-staff-form .modal-content-form {
+  background-color: #1e1e1e; /* gris oscuro */
+  color: #ffffff;
+  padding: 20px 25px;
+  width: 500px;
+  max-width: 90%;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  animation: fadeIn 0.25s ease-in-out;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Título */
+#modal-staff-form h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #ffeb3b;
+  font-size: 1.5em;
+}
+
+/* Form labels */
+#modal-staff-form label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  font-size: 0.95em;
+  color: #ffffff;
+}
+
+/* Inputs y selects */
+#modal-staff-form input[type="text"],
+#modal-staff-form input[type="time"],
+#modal-staff-form select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2c2c2c;
+  color: #fff;
+  box-sizing: border-box;
+  font-size: 0.95em;
+}
+
+#modal-staff-form input:focus,
+#modal-staff-form select:focus {
+  outline: none;
+  border-color: #ffeb3b;
+  box-shadow: 0 0 5px rgba(255,235,59,0.4);
+}
+
+/* Horarios */
+#modal-staff-form #horario-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#modal-staff-form .horario-row {
+  display: flex;
+  gap: 8px;
+}
+
+#modal-staff-form .horario-row select,
+#modal-staff-form .horario-row input {
+  flex: 1;
+}
+
+/* Botón eliminar horario */
+#modal-staff-form .horario-row .delete-horario-btn {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: center;
+}
+
+#modal-staff-form .horario-row .delete-horario-btn:hover {
+  background-color: #d32f2f;
+}
+
+.horario-error {
+  display: none;
+  color: #f44336;
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+
+/* Botones del modal */
+#modal-staff-form .modal-buttons {
+  display: flex;
+  justify-content: space-between; /* agregar horario a la izquierda, guardar/cerrar a la derecha */
+  margin-top: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#modal-staff-form .modal-buttons button {
+  padding: 6px 14px;
+  border-radius: 5px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#modal-staff-form .modal-buttons button[type="submit"] {
+  background-color: #ffeb3b;
+  color: #000;
+}
+
+#modal-staff-form .modal-buttons button[type="submit"]:hover {
+  background-color: #fdd835;
+}
+
+#modal-staff-form .modal-buttons button#close-form-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+#modal-staff-form .modal-buttons button#close-form-btn:hover {
+  background-color: #d32f2f;
+}
+
+#modal-staff-form .modal-buttons button#add-horario-btn {
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 6px;
+}
+
+#modal-staff-form .modal-buttons button#add-horario-btn:hover {
+  background-color: #43a047;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ocultar modal */
+#modal-staff-form.hidden {
+  display: none !important;
+}

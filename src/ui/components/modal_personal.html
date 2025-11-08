@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="./ui/styles/footer_personal.css" />
+
+<div id="modal-personal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Gestión de Personal</h2>
+
+    <div class="filters">
+      <input type="text" id="search-input" placeholder="Buscar por nombre, apellido, DNI, tipo, estado o test" />
+    </div>
+
+    <div class="table-container">
+      <table id="personal-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>PWA</th>
+            <th>Test</th>
+            <th>Horario</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="pagination"></div>
+
+    <div class="modal-buttons">
+      <button id="add-staff-btn">Agregar nuevo</button>
+      <button id="close-modal-btn">Cerrar</button>
+    </div>
+  </div>
+</div>

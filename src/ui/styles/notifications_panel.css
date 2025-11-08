@@ -1,0 +1,75 @@
+#notification-panel {
+  width: 350px;               /* ancho fijo */
+  height: 430px;              /* mismo alto que la cámara */
+  display: flex;
+  flex-direction: column;
+  background: #FFD54A;
+  color: #222;
+  border-left: 1px solid #e6c200;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: hidden;           /* evita que el header se salga */
+}
+
+/* Encabezado fijo */
+.notifications-header {
+  flex-shrink: 0;             /* no se encoge */
+  padding: 10px 0;
+  font-weight: 600;
+  font-size: 1.1em;
+  text-align: center;
+  border-bottom: 1px solid #e6c200;
+  background: #FFD54A;
+  z-index: 1;
+  margin-bottom: 10px;        /* separación entre título y lista */
+}
+
+/* Lista con scroll interno */
+.notifications-list {
+  flex: 1;                     /* ocupa todo el espacio restante */
+  overflow-y: auto;            /* scroll solo aquí */
+  padding: 0 10px;             /* separa las tarjetas de los bordes */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;                   /* separación entre tarjetas */
+}
+
+/* Tarjetas de notificación */
+.notification-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-size: 0.9em;
+  color: #222;
+}
+
+.notif-card {
+  background: #fff;
+  border-left: 5px solid #d32f2f;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.9em;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.notif-title {
+  font-weight: 700;
+  color: #b71c1c;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.notif-row strong {
+  color: #000;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

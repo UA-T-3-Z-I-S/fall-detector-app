@@ -1,0 +1,153 @@
+/* ===========================================
+   📸 CAMERA PANEL
+=========================================== */
+
+#camera-panel {
+  width: 790px;
+  height: 420px;
+  background: #181818;
+  border-radius: 12px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-feed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.camera-feed video,
+.camera-feed img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+#cam-placeholder {
+  display: block;
+  filter: brightness(0.5);
+}
+
+/* Etiqueta con nombre de cámara */
+.camera-label {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* Botón rueda de ajustes */
+.cam-settings-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 20;
+  transition: background .2s;
+}
+.cam-settings-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ===========================================
+   ⚙ MODAL CONFIG — EXACTO AL DASHBOARD
+=========================================== */
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: #181818;
+  color: #FFD54A;
+  padding: 20px 24px;
+  border-radius: 12px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.modal-content h2 {
+  margin: 0 0 6px 0;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #222;
+  color: #FFD54A;
+  font-size: 0.9em;
+}
+
+/* Botones SX — MISMA LÍNEA DEL DASHBOARD */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* Botones */
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+/* Guardar */
+#cfg-save {
+  background: #FFD54A;
+  color: #222;
+}
+#cfg-save:hover {
+  background: #e6c200;
+}
+
+/* Cancelar */
+#cfg-cancel {
+  background: #222;
+  color: #FFD54A;
+  border: 1px solid #FFD54A;
+}
+#cfg-cancel:hover {
+  background: #444;
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "string",                 
+    "tipo": "string",
+    "referencia_id": "string",
+    "datos": {},
+    "estado_sincronizacion": "string",
+    "fecha_hora": "string"
+  }
+]

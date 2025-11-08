@@ -1,0 +1,23 @@
+{
+  "name": "fall-detector-app",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron": "^31.0.0",
+    "express": "^5.1.0",
+    "fs-extra": "^11.2.0",
+    "hls.js": "^1.6.14",
+    "mongodb": "^6.20.0",
+    "node-rtsp-stream": "^0.0.9",
+    "uuid": "^13.0.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "electron-builder": "^24.13.0"
+  }
+}

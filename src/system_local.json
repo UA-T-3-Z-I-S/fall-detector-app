@@ -1,0 +1,12 @@
+{
+  "MONGO_URI": "mongodb+srv://paredes175_db_user:EZ3Wa3RxtN9xDHW1@bd-albergue.q4kzwzm.mongodb.net/?appName=BD-Albergue",
+  "MONGO_DB_NAME": "Sistema_Albergue",
+  "USER_LOGIN": {
+    "username": "admin",
+    "password": "MTIzNDU2"
+  },
+  "USER_SESSION": {
+    "active": true,
+    "last_login": "2025-11-05T02:41:03.710Z"
+  }
+}
